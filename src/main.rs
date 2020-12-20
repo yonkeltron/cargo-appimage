@@ -9,6 +9,8 @@ mod commands;
 use async_std::task;
 
 fn main() -> Result<()> {
+  color_eyre::install()?;
+
   let matches = app_from_crate!()
     .arg(
       Arg::with_name("linuxdeploy")
