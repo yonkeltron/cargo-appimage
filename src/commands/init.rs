@@ -42,6 +42,9 @@ pub async fn execute(application_definition: ApplicationDefinition) -> Result<()
 
   let desktop_file_path = application_definition
     .appdir_path
+    .join("usr")
+    .join("share")
+    .join("applications")
     .join(format!("{}.desktop", application_definition.name));
   let desktop_file_contents_length =
     DesktopFile::new(&application_definition.name, &application_definition.name)
