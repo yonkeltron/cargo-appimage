@@ -15,17 +15,17 @@ impl ApplicationDefinition {
     let manifest = Manifest::from_path("Cargo.toml")?;
     let package = manifest
       .package
-      .ok_or(eyre!("Manifest in Cargo.toml has no package section!"))?;
+      .ok_or_else(|| eyre!("Manifest in Cargo.toml has no package section!"))?;
 
     let bin = manifest
       .bin
       .first()
-      .ok_or(eyre!("No [[bin]] section found in Cargo.toml"))?;
+      .ok_or_else(|| eyre!("No [[bin]] section found in Cargo.toml"))?;
 
     let command = bin
       .name
       .as_ref()
-      .ok_or(eyre!("[[bin]] section has no 'name' key"))?;
+      .ok_or_else(|| eyre!("[[bin]] section has no 'name' key"))?;
 
     let name = package.name;
     let appdir_path_name = format!("{}.AppDir", name);
