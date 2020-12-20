@@ -28,7 +28,7 @@ impl ApplicationDefinition {
       .ok_or_else(|| eyre!("[[bin]] section has no 'name' key"))?;
 
     let name = package.name;
-    let appdir_path_name = format!("{}.AppDir", name);
+    let appdir_path_name = format!("{}.AppDir", &command);
     let appdir_path = Path::new(&appdir_path_name).to_path_buf();
 
     let rust_info = rust_info::get();

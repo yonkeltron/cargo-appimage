@@ -115,3 +115,16 @@ async fn setup_with_linuxdeploy(
     }
   }
 }
+
+#[cfg(test)]
+mod tests {
+  use super::*;
+
+  #[test]
+  fn test_url_for_arch() {
+    assert!(url_for_arch("x86_64").is_ok());
+    assert!(url_for_arch("i386").is_ok());
+
+    assert!(url_for_arch("aarch64").is_err());
+  }
+}
