@@ -4,10 +4,10 @@ use color_eyre::eyre::{eyre, Result};
 use async_std::path::{Path, PathBuf};
 
 pub struct ApplicationDefinition {
-  pub arch: String,
-  pub name: String,
-  pub command: String,
   pub appdir_path: PathBuf,
+  pub arch: String,
+  pub command: String,
+  pub name: String,
 }
 
 impl ApplicationDefinition {
@@ -36,10 +36,10 @@ impl ApplicationDefinition {
       .target_arch
       .unwrap_or_else(|| String::from("UNKNOWN_ARCH"));
     let app_def = Self {
-      arch,
-      name,
-      command: String::from(command),
       appdir_path,
+      arch,
+      command: String::from(command),
+      name,
     };
     Ok(app_def)
   }
