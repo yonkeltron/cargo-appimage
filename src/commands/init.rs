@@ -13,22 +13,17 @@ const SIXTY_FOUR_BIT_URL: &str = "https://github.com/linuxdeploy/linuxdeploy/rel
 const THIRTY_TWO_BIT_URL: &str = "https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-i386.AppImage";
 
 pub async fn execute(application_definition: ApplicationDefinition) -> Result<()> {
-  let rust_info = rust_info::get();
-  let arch = rust_info
-    .target_arch
-    .unwrap_or_else(|| String::from("UNKNOWN_ARCH"));
   let mut logger = Logger::new();
   logger.log("Initializing AppImage Workspace");
-  logger.info(format!("Detected target architecture: {}", arch));
 
-  let download_url = url_for_arch(&arch)?;
+  let download_url = url_for_arch(&application_definition.arch)?;
   logger.loading(format!(
     "Downloading linuxdeploy AppImage from {}",
     &download_url
   ));
 
   let linuxdeploy_appimage_contents = download_linuxdeploy_appimage_contents(&download_url).await?;
-  let output_path_name = format!("linuxdeploy-{}.AppImage", arch);
+  let output_path_name = format!("linuxdeploy-{}.AppImage", &application_definition.arch);
   let output_path = Path::new(&output_path_name).to_path_buf();
   fs::write(&output_path, &linuxdeploy_appimage_contents).await?;
   logger.info(format!(

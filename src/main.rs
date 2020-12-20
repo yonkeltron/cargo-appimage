@@ -38,7 +38,7 @@ fn main() -> Result<()> {
       task::block_on(commands::init::execute(application_definition))
     }
     (other, _) => {
-      logger.error("Unknown subcommand");
+      logger.error("Unknown subcommand. Try 'help' for more info.");
       Err(eyre!("Unknown subcommand: {}", other))
     }
   }
