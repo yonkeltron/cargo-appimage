@@ -1,8 +1,12 @@
 [package]
 name = "cargo-appimage"
-version = "0.1.0"
+version = "0.1.0-beta1"
 authors = ["Jonathan E. Magen <yonkeltron@gmail.com>"]
+description = "Cargo subcommand to make Linux AppImages"
+homepage = "https://github.com/yonkeltron/cargo-appimage"
+repository = "https://github.com/yonkeltron/cargo-appimage"
 edition = "2018"
+license = "Apache-2.0"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
