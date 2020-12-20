@@ -6,10 +6,13 @@ use async_std::path::{Path, PathBuf};
 use std::os::unix::fs::PermissionsExt;
 use std::process::Command;
 
+use crate::application_definition::ApplicationDefinition;
+use crate::desktop_file::DesktopFile;
+
 const SIXTY_FOUR_BIT_URL: &str = "https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage";
 const THIRTY_TWO_BIT_URL: &str = "https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-i386.AppImage";
 
-pub async fn execute() -> Result<()> {
+pub async fn execute(application_definition: ApplicationDefinition) -> Result<()> {
   let rust_info = rust_info::get();
   let arch = rust_info
     .target_arch
@@ -40,7 +43,21 @@ pub async fn execute() -> Result<()> {
     output_path.display()
   ));
 
-  setup_with_linuxdeploy(&output_path).await?;
+  setup_with_linuxdeploy(&application_definition, &output_path).await?;
+
+  let desktop_file_path = application_definition
+    .appdir_path
+    .join(format!("{}.desktop", application_definition.name));
+  let desktop_file_contents_length =
+    DesktopFile::new(&application_definition.name, &application_definition.name)
+      .render_to_file(&desktop_file_path)
+      .await?;
+
+  logger.info(format!(
+    "Wrote {} bytes to {}",
+    desktop_file_contents_length,
+    desktop_file_path.display()
+  ));
 
   Ok(())
 }
@@ -81,10 +98,14 @@ async fn make_executable(path: &PathBuf) -> Result<()> {
   }
 }
 
-async fn setup_with_linuxdeploy(path: &PathBuf) -> Result<()> {
+async fn setup_with_linuxdeploy(
+  application_definition: &ApplicationDefinition,
+  path: &PathBuf,
+) -> Result<()> {
   let absolute_path = path.canonicalize().await?;
   let status = Command::new(absolute_path)
-    .args(&["--appdir", "AppDir"])
+    .arg("--appdir")
+    .arg(&application_definition.appdir_path)
     .status()
     .wrap_err_with(|| format!("Unable to spawn setup command from {}", path.display()))?;
 

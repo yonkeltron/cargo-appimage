@@ -4,7 +4,9 @@ use clap::{
 use color_eyre::eyre::{eyre, Result};
 use paris::Logger;
 
+mod application_definition;
 mod commands;
+mod desktop_file;
 
 use async_std::task;
 
@@ -30,9 +32,11 @@ fn main() -> Result<()> {
     .get_matches();
 
   let mut logger = Logger::new();
-
+  let application_definition = application_definition::ApplicationDefinition::new_from_guess()?;
   match matches.subcommand() {
-    ("init", Some(_init_matches)) => task::block_on(commands::init::execute()),
+    ("init", Some(_init_matches)) => {
+      task::block_on(commands::init::execute(application_definition))
+    }
     (other, _) => {
       logger.error("Unknown subcommand");
       Err(eyre!("Unknown subcommand: {}", other))
