@@ -12,7 +12,8 @@ use crate::desktop_file::DesktopFile;
 const SIXTY_FOUR_BIT_URL: &str = "https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage";
 const THIRTY_TWO_BIT_URL: &str = "https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-i386.AppImage";
 
-pub async fn execute(application_definition: ApplicationDefinition) -> Result<()> {
+pub async fn execute() -> Result<()> {
+  let application_definition = ApplicationDefinition::new_from_guess().await?;
   let mut logger = Logger::new();
   logger.log("Initializing AppImage Workspace");
 

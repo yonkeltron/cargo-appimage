@@ -353,7 +353,9 @@ dependencies = [
  "color-eyre",
  "paris",
  "rust_info",
+ "serde",
  "surf",
+ "toml 0.5.8",
 ]
 
 [[package]]
