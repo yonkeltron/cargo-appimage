@@ -15,7 +15,8 @@ pub struct ApplicationDefinition {
 
 impl ApplicationDefinition {
   pub async fn new_from_guess() -> Result<Self> {
-    let manifest: Manifest<AppImageMetadata> = Manifest::from_path_with_metadata("Cargo.toml")?;
+    let manifest: Manifest<AppImageMetadata> =
+      Manifest::from_path_with_metadata("Cargo.toml").wrap_err("Unable to load Cargo.toml")?;
     let package = manifest
       .package
       .ok_or_else(|| eyre!("Cargo.toml has no package section!"))?;
@@ -43,7 +44,7 @@ impl ApplicationDefinition {
     };
 
     let icon = {
-      let pkg = package.clone();
+      let pkg = package;
       match pkg.metadata {
         Some(ref meta) => meta
           .clone()
@@ -66,7 +67,7 @@ impl ApplicationDefinition {
       arch,
       command: String::from(command),
       icon,
-      name: String::from(name),
+      name,
     };
     Ok(app_def)
   }
