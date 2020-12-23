@@ -23,14 +23,16 @@ impl DesktopFile {
     }
   }
 
-  pub fn render_from_template(self, path: &PathBuf) -> Result<String> {
-    let template = ParserBuilder::with_stdlib().build()?.parse_file(path)?;
+  pub fn render_from_template(self, template_path: &PathBuf) -> Result<String> {
+    let template = ParserBuilder::with_stdlib()
+      .build()?
+      .parse_file(template_path)?;
     let vars = liquid::to_object(&self)?;
 
     let contents = template.render(&vars).wrap_err_with(|| {
       format!(
         "Error parsing desktop file template from {}",
-        path.display()
+        template_path.display()
       )
     })?;
 
