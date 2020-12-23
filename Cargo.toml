@@ -11,15 +11,16 @@ license = "Apache-2.0"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-askama = "0.8"
 async-std = "1.8"
 cargo_toml = "0.8"
 clap = "2.33"
 color-eyre = "0.5"
+liquid = "0.21"
 paris = "1.5"
 rust_info = "0.3"
 serde = "1.0"
 surf = "2.1"
+tempfile = "3.1"
 toml = "0.5"
 
 [package.metadata.appimage]

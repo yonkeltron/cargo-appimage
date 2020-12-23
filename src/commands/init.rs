@@ -39,24 +39,9 @@ pub async fn execute() -> Result<()> {
     output_path.display()
   ));
 
+  write_config_files(&application_definition.name).await?;
+
   setup_with_linuxdeploy(&application_definition, &output_path).await?;
-
-  let desktop_file_path = application_definition
-    .appdir_path
-    .join("usr")
-    .join("share")
-    .join("applications")
-    .join(format!("{}.desktop", application_definition.name));
-  let desktop_file_contents_length =
-    DesktopFile::new(&application_definition.name, &application_definition.name)
-      .render_to_file(&desktop_file_path)
-      .await?;
-
-  logger.info(format!(
-    "Wrote {} bytes to {}",
-    desktop_file_contents_length,
-    desktop_file_path.display()
-  ));
 
   Ok(())
 }
@@ -95,6 +80,32 @@ async fn make_executable(path: &PathBuf) -> Result<()> {
   } else {
     Err(eyre!("File at {} does not exist", path.display()))
   }
+}
+
+async fn write_config_files(name: &str) -> Result<()> {
+  let mut initial_logger = Logger::new();
+  let config_dir_path = Path::new(".appimage");
+  fs::create_dir_all(&config_dir_path).await?;
+  let mut logger = initial_logger
+    .info("Created <blue>.appimage</> directory to house config files")
+    .indent(1);
+
+  let desktop_file_template_path = config_dir_path.join(format!("{}.desktop", name));
+
+  fs::write(
+    &desktop_file_template_path,
+    include_str!("../templates/desktop.liquid"),
+  )
+  .await?;
+
+  logger.log(format!(
+    "Wrote <blue>{}</>",
+    &desktop_file_template_path.display()
+  ));
+
+  let icon_file_path = config_dir_path.join(format!("{}.svg", name));
+
+  Ok(())
 }
 
 async fn setup_with_linuxdeploy(
